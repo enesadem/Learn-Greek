@@ -1,78 +1,66 @@
-// Önce, CSV dosyasından verileri okumak için bir fonksiyon
-function fetchVerbs(callback) {
-    // Örnek CSV dosya yolu (kendi dosyanızın yolunu belirtin)
-    const csvFilePath = 'verblar.csv';
+const testData = [
+    { verb: "koşuyorum", answer: "ben" },
+    { verb: "geliyorsun", answer: "sen" },
+    // Diğer veriler...
+];
 
-    // CSV dosyasını okuma işlemi
-    fetch(csvFilePath)
-        .then(response => response.text())
-        .then(data => {
-            // CSV verilerini diziye dönüştür
-            const rows = data.split('\n');
-            const verbs = [];
+const allOptions = ["εγώ", "εσύ", "αυτός / αυτή / αυτό", "εμείς", "εσείς", "αυτοί / αυτές / αυτά"]; // Geniş şahıs zamiri listesi
 
-            rows.forEach(row => {
-                const columns = row.split(',');
-                const verb = {
-                    infinitive: columns[0].trim(),
-                    person1: columns[1].trim(),
-                    person2: columns[2].trim(),
-                    person3: columns[3].trim()
-                };
-                verbs.push(verb);
-            });
+let currentQuestion = 0;
+let score = 0;
 
-            // Callback fonksiyonunu çalıştır ve verileri iletecek
-            callback(verbs);
-        })
-        .catch(error => console.error('CSV dosyası okuma hatası:', error));
+function getRandomOptions(correctAnswer) {
+    let options = [correctAnswer];
+    while (options.length < 3) {
+        let randomOption = allOptions[Math.floor(Math.random() * allOptions.length)];
+        if (!options.includes(randomOption)) {
+            options.push(randomOption);
+        }
+    }
+    return options.sort(() => Math.random() - 0.5);
 }
 
-// Test fonksiyonunu başlat
-function startTest() {
-    // Verileri al ve testi başlat
-    fetchVerbs(verbs => {
-        const testContainer = document.getElementById('test-container');
-        
-        // Rastgele bir fiil seç
-        const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
-        
-        // Soruyu hazırla
-        const question = `Aşağıdaki fiilin 3. şahıs zamiri nedir?<br><br>
-                          Fiil: ${randomVerb.infinitive}`;
-        
-        // Şık seçeneklerini hazırla
-        const options = [
-            randomVerb.person1,
-            randomVerb.person2,
-            randomVerb.person3
-        ];
-
-        // Şıkları karıştır
-        options.sort(() => Math.random() - 0.5);
-
-        // Soruyu ve şıkları ekrana yazdır
-        testContainer.innerHTML = `<p>${question}</p>`;
-        options.forEach((option, index) => {
-            testContainer.innerHTML += `<button onclick="checkAnswer('${option}', '${randomVerb.person3}')">${option}</button>`;
-        });
+function displayQuestion() {
+    const question = testData[currentQuestion];
+    const choices = getRandomOptions(question.answer);
+    document.getElementById('question').innerText = `Bu fiil hangi şahıs zamirine ait: ${question.verb}?`;
+    const choicesContainer = document.getElementById('choices');
+    choicesContainer.innerHTML = '';
+    choices.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'btn';
+        button.innerText = option;
+        button.onclick = () => checkAnswer(option);
+        choicesContainer.appendChild(button);
     });
 }
 
-// Kullanıcının cevabını kontrol et
-function checkAnswer(selectedOption, correctAnswer) {
-    const resultContainer = document.getElementById('result-container');
-
-    // Cevabı kontrol et ve sonucu ekrana yazdır
-    if (selectedOption === correctAnswer) {
-        resultContainer.innerHTML = '<p>Doğru! Tebrikler!</p>';
-    } else {
-        resultContainer.innerHTML = `<p>Üzgünüm, doğru cevap: ${correctAnswer}</p>`;
+function checkAnswer(answer) {
+    if (answer === testData[currentQuestion].answer) {
+        score++;
     }
-
-    // Yeni bir test başlat
-    startTest();
+    currentQuestion++;
+    if (currentQuestion < testData.length) {
+        displayQuestion();
+    } else {
+        showResults();
+    }
 }
 
-// Sayfa yüklendiğinde testi başlat
-document.addEventListener('DOMContentLoaded', startTest);
+function nextQuestion() {
+    displayQuestion();
+}
+
+function showResults() {
+    const result = document.getElementById('result');
+    result.innerText = `Testi tamamladınız! Skorunuz: ${score} / ${testData.length}`;
+    document.getElementById('choices').innerHTML = '';
+    document.getElementById('nextButton').style.display = 'none';
+    document.getElementById('restartButton').style.display = 'block';
+}
+
+function restartTest() {
+    location.reload(); // Sayfayı yeniden yükler
+}
+
+displayQuestion();

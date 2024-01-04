@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiil Çekim Testi</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Fiil Çekim Testi</h1>
+        <div id="question"></div>
+        <div id="choices" class="choice-container"></div>
+        <button id="nextButton" class="btn" onclick="nextQuestion()">Sonraki Soru</button>
+        <div id="result"></div>
+        <button id="restartButton" class="btn" onclick="restartTest()" style="display:none;">Yeni Teste Başla</button>
+        <div id="startTest">
+            <label for="numQuestions">Kaç soruluk bir test istersiniz?</label>
+            <input type="number" id="numQuestions" min="1" value="5">
+            <button class="btn" onclick="startTest()">Testi Başlat</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

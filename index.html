@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yunanca Fiil Çekimleri</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Fiil Çekim Testi</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Yunanca Fiil Çekimleri</h1>
-    </header>
-    <main>
-        <!-- Buraya fiil çekimleri içeriğini ekleyebilirsiniz -->
-    </main>
-    <footer>
-        <p>&copy; 2024 Yunanca Öğrenme Sitesi</p>
-    </footer>
+    <div class="container">
+        <h1>Fiil Çekim Testi</h1>
+        <div id="question"></div>
+        <div id="choices" class="choice-container"></div>
+        <button id="nextButton" class="btn" onclick="nextQuestion()">Sonraki Soru</button>
+        <div id="result"></div>
+        <button id="restartButton" class="btn" onclick="restartTest()" style="display:none;">Yeni Teste Başla</button>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
